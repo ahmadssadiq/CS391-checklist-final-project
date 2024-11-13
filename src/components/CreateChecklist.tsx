@@ -8,6 +8,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { v4 as uuidv4 } from 'uuid';
 import styled from 'styled-components';
 import React, { useState } from 'react';
+import { TransitionGroup, CSSTransition } from 'react-transition-group';
 
 interface ChecklistItem {
     id: string;
@@ -55,7 +56,24 @@ const StyledListItem = styled(ListItem)`
     border-radius: 8px;
     margin-top: 10px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.05);
-    transition: box-shadow 0.3s;
+    transition: box-shadow 0.3s, opacity 300ms, transform 300ms;
+
+    &.item-enter {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    &.item-enter-active {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    &.item-exit {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    &.item-exit-active {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
 
     &:hover {
         box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
@@ -115,26 +133,33 @@ export default function CreateChecklist() {
                 </Button>
             </InputContainer>
             <StyledList>
-                {checklist.map((item) => (
-                    <StyledListItem
-                        key={item.id}
-                        secondaryAction={
-                            <IconButton
-                                edge="end"
-                                aria-label="delete"
-                                onClick={() => handleRemoveItem(item.id)}
+                <TransitionGroup>
+                    {checklist.map((item) => (
+                        <CSSTransition
+                            key={item.id}
+                            timeout={300}
+                            classNames="item"
+                        >
+                            <StyledListItem
+                                secondaryAction={
+                                    <IconButton
+                                        edge="end"
+                                        aria-label="delete"
+                                        onClick={() => handleRemoveItem(item.id)}
+                                    >
+                                        <DeleteIcon />
+                                    </IconButton>
+                                }
                             >
-                                <DeleteIcon />
-                            </IconButton>
-                        }
-                    >
-                        <Checkbox
-                            checked={item.completed}
-                            onChange={() => handleToggleComplete(item.id)}
-                        />
-                        <ItemText completed={item.completed}>{item.text}</ItemText>
-                    </StyledListItem>
-                ))}
+                                <Checkbox
+                                    checked={item.completed}
+                                    onChange={() => handleToggleComplete(item.id)}
+                                />
+                                <ItemText completed={item.completed}>{item.text}</ItemText>
+                            </StyledListItem>
+                        </CSSTransition>
+                    ))}
+                </TransitionGroup>
             </StyledList>
         </Container>
     );
