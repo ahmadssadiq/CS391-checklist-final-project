@@ -18,44 +18,48 @@ interface ChecklistItem {
 
 // Styled components
 const Container = styled.div`
-    background-color: #6ac5fe;
-    padding: 70px;
+    background-color: #f7f9fc;
+    padding: 50px;
     border-radius: 12px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    max-width: 500px;
-    margin: auto;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: 50px auto;
     text-align: center;
-    font-family: Georgia;
+    font-family: 'Helvetica Neue', sans-serif;
 `;
 
 const Title = styled.h1`
-    color: black;
-    font-size: 1.8rem;
-    font-weight: bold;
-    margin-bottom: 20px;
+    color: #333;
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 30px;
 `;
 
 const InputContainer = styled.div`
     display: flex;
+    justify-content: center;
     gap: 10px;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
 `;
 
+
 const StyledList = styled(List)`
-    background-color: lavender;
+    background-color: #fff;
     padding: 20px;
     border-radius: 8px;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.05);
 `;
+
 
 const StyledListItem = styled(ListItem)`
     display: flex;
     align-items: center;
     background-color: white;
-    padding: 10px;
-    border: 1px solid #d9e2ec;
+    padding: 15px;
+    border: 1px solid #e0e0e0;
     border-radius: 8px;
     margin-top: 10px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.05);
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.05);
     transition: box-shadow 0.3s, opacity 300ms, transform 300ms;
 
     &.item-enter {
@@ -81,9 +85,11 @@ const StyledListItem = styled(ListItem)`
 `;
 
 const ItemText = styled.span<{ completed: boolean }>`
-    color: #1a3a56;
+    color: #333;
     font-size: 1rem;
     text-decoration: ${({ completed }) => (completed ? 'line-through' : 'none')};
+    flex-grow: 1;
+    margin-left: 10px;
 `;
 
 export default function CreateChecklist() {
