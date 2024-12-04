@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import List from '@mui/material/List';
@@ -7,8 +8,8 @@ import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { v4 as uuidv4 } from 'uuid';
 import styled from 'styled-components';
-import React, { useState } from 'react';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
+import ProgressBar from './ProgressBar'; // imported the progress bar component
 
 interface ChecklistItem {
     id: string;
@@ -39,9 +40,13 @@ const InputContainer = styled.div`
     display: flex;
     justify-content: center;
     gap: 10px;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 `;
 
+const ProgressContainer = styled.div`
+    margin: 20px 0;
+    text-align: center;
+`;
 
 const StyledList = styled(List)`
     background-color: #fff;
@@ -49,7 +54,6 @@ const StyledList = styled(List)`
     border-radius: 8px;
     box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.05);
 `;
-
 
 const StyledListItem = styled(ListItem)`
     display: flex;
@@ -93,8 +97,9 @@ const ItemText = styled.span<{ completed: boolean }>`
 `;
 
 export default function CreateChecklist() {
-    const [checklist, setChecklist] = React.useState<ChecklistItem[]>([]);
-    const [newItemText, setNewItemText] = React.useState<string>('');
+    const [checklist, setChecklist] = useState<ChecklistItem[]>([]);
+    const [newItemText, setNewItemText] = useState<string>('');
+    const [title, setTitle] = useState<string>(''); // New state for checklist title
 
     const handleAddItem = () => {
         if (newItemText.trim() !== '') {
@@ -120,13 +125,42 @@ export default function CreateChecklist() {
         setChecklist((prev) => prev.filter((item) => item.id !== id));
     };
 
+    const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => { // Handler to update the checklist title
+        setTitle(event.target.value);
+    };
+
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setNewItemText(event.target.value);
     };
 
+    const handleSaveChecklist = () => { // FS: Handler to "save" the checklist (for now, it just logs the checklist data)
+        const completedItems = checklist.filter((item) => item.completed).length;
+        const totalItems = checklist.length;
+        const checklistData = {
+            title,
+            items: checklist,
+            completedItems,
+            totalItems,
+        };
+
+        console.log('Checklist saved:', checklistData);
+        // Replace the console.log with an API call to save checklistData
+    };
+
+    const completedItems = checklist.filter((item) => item.completed).length;
+    const totalItems = checklist.length;
+
     return (
         <Container>
             <Title>Create Your Checklist</Title>
+            <TextField
+                label="Checklist Title"
+                variant="outlined"
+                fullWidth
+                value={title}
+                onChange={handleTitleChange}
+                style={{ marginBottom: '20px' }}
+            />
             <InputContainer>
                 <TextField
                     label="Add Item"
@@ -138,6 +172,15 @@ export default function CreateChecklist() {
                     Add Item
                 </Button>
             </InputContainer>
+            {totalItems > 0 && ( // FS: Only show the ProgressBar if there are items in the checklist
+             <ProgressContainer>
+             {/* Pass the number of completed items and total items to the ProgressBar */}
+             <ProgressBar value={completedItems} max={totalItems} />
+        
+            {/* Display a textual representation of progress */}
+             <p>{`Progress: ${completedItems} / ${totalItems} items completed`}</p>
+            </ProgressContainer>
+            )}
             <StyledList>
                 <TransitionGroup>
                     {checklist.map((item) => (
@@ -167,6 +210,15 @@ export default function CreateChecklist() {
                     ))}
                 </TransitionGroup>
             </StyledList>
+            <Button
+                variant="contained"
+                color="primary"
+                onClick={handleSaveChecklist}
+                style={{ marginTop: '20px' }}
+                disabled={!title || checklist.length === 0}
+            >
+                Save Checklist
+            </Button>
         </Container>
     );
 }
