@@ -1,3 +1,5 @@
+// component created by: Arufa Khanom
+
 import { Link } from 'react-router-dom'; // Importing the Link component for navigation
 
 // Navbar component: Displays a navigation bar with links to different pages
