@@ -11,10 +11,12 @@ import styled from 'styled-components';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import ProgressBar from './ProgressBar'; // imported the progress bar component
 
+// {AS}: Define the interface for a checklist item, including the optional 'description' field
 interface ChecklistItem {
     id: string;
     text: string;
     completed: boolean;
+    description?: string; // {AS}: Description field for each checklist item
 }
 
 // Styled components
@@ -41,6 +43,15 @@ const InputContainer = styled.div`
     justify-content: center;
     gap: 10px;
     margin-bottom: 20px;
+`;
+
+const DescriptionContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    margin-left: 10px;
+    width: 100%; /* Ensure it spans the available width */
 `;
 
 const ProgressContainer = styled.div`
@@ -100,6 +111,7 @@ export default function CreateChecklist() {
     const [checklist, setChecklist] = useState<ChecklistItem[]>([]);
     const [newItemText, setNewItemText] = useState<string>('');
     const [title, setTitle] = useState<string>(''); // New state for checklist title
+    const [showDescriptionInput, setShowDescriptionInput] = useState<string | null>(null); // {AS}: Tracks which item is being edited for its description
 
     const handleAddItem = () => {
         if (newItemText.trim() !== '') {
@@ -131,6 +143,20 @@ export default function CreateChecklist() {
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setNewItemText(event.target.value);
+    };
+
+    // {AS}: Add or update the description of a specific checklist item
+    const handleAddDescription = (id: string, description: string) => {
+        setChecklist((prev) =>
+            prev.map((item) =>
+                item.id === id ? { ...item, description } : item
+            )
+        );
+    };
+
+    // {AS}: Toggle the visibility of the description input for a specific item
+    const toggleDescriptionInput = (id: string) => {
+        setShowDescriptionInput((prev) => (prev === id ? null : id));
     };
 
     const completedItems = checklist.filter((item) => item.completed).length;
@@ -190,6 +216,33 @@ export default function CreateChecklist() {
                                     onChange={() => handleToggleComplete(item.id)}
                                 />
                                 <ItemText completed={item.completed}>{item.text}</ItemText>
+                                <DescriptionContainer>
+                                    {/* {AS}: Display description if available */}
+                                    {item.description && (
+                                        <p style={{ fontStyle: 'italic', color: '#555' }}>
+                                            {item.description}
+                                        </p>
+                                    )}
+                                    {/* {AS}: Show or hide the description input */}
+                                    {showDescriptionInput === item.id && (
+                                        <TextField
+                                            label="Add Description"
+                                            variant="outlined"
+                                            fullWidth
+                                            value={item.description || ''}
+                                            onChange={(e) =>
+                                                handleAddDescription(item.id, e.target.value)
+                                            }
+                                        />
+                                    )}
+                                    <Button
+                                        onClick={() => toggleDescriptionInput(item.id)}
+                                    >
+                                        {showDescriptionInput === item.id
+                                            ? 'Close'
+                                            : 'Add Description'}
+                                    </Button>
+                                </DescriptionContainer>
                             </StyledListItem>
                         </CSSTransition>
                     ))}
