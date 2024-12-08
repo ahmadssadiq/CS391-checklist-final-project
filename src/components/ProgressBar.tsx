@@ -23,7 +23,7 @@ const Progress = styled.div<{ percentage: number; color: string }>`
     transition: width 0.3s ease;                  // Smooth transition for width changes
 `;
 
-function ProgressBar({ value, max }: ProgressBarProps) {
+export default function ProgressBar({ value, max }: ProgressBarProps) {
     const percentage = (value / max) * 100;
 
     // Function to determine the color of the progress bar based on the percentage.
@@ -40,4 +40,3 @@ function ProgressBar({ value, max }: ProgressBarProps) {
     );
 }
 
-export default ProgressBar;

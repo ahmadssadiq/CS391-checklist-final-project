@@ -133,20 +133,6 @@ export default function CreateChecklist() {
         setNewItemText(event.target.value);
     };
 
-    const handleSaveChecklist = () => { // FS: Handler to "save" the checklist (for now, it just logs the checklist data)
-        const completedItems = checklist.filter((item) => item.completed).length;
-        const totalItems = checklist.length;
-        const checklistData = {
-            title,
-            items: checklist,
-            completedItems,
-            totalItems,
-        };
-
-        console.log('Checklist saved:', checklistData);
-        // Replace the console.log with an API call to save checklistData
-    };
-
     const completedItems = checklist.filter((item) => item.completed).length;
     const totalItems = checklist.length;
 
@@ -173,13 +159,12 @@ export default function CreateChecklist() {
                 </Button>
             </InputContainer>
             {totalItems > 0 && ( // FS: Only show the ProgressBar if there are items in the checklist
-             <ProgressContainer>
-             {/* Pass the number of completed items and total items to the ProgressBar */}
-             <ProgressBar value={completedItems} max={totalItems} />
-        
-            {/* Display a textual representation of progress */}
-             <p>{`Progress: ${completedItems} / ${totalItems} items completed`}</p>
-            </ProgressContainer>
+                <ProgressContainer>
+                    {/* Pass the number of completed items and total items to the ProgressBar */}
+                    <ProgressBar value={completedItems} max={totalItems} />
+                    {/* Display a textual representation of progress */}
+                    <p>{`Progress: ${completedItems} / ${totalItems} items completed`}</p>
+                </ProgressContainer>
             )}
             <StyledList>
                 <TransitionGroup>
@@ -210,15 +195,6 @@ export default function CreateChecklist() {
                     ))}
                 </TransitionGroup>
             </StyledList>
-            <Button
-                variant="contained"
-                color="primary"
-                onClick={handleSaveChecklist}
-                style={{ marginTop: '20px' }}
-                disabled={!title || checklist.length === 0}
-            >
-                Save Checklist
-            </Button>
         </Container>
     );
 }
